@@ -1,8 +1,6 @@
 package co.com.sofka.crud.controller;
 
-import co.com.sofka.crud.controller.exception.NotFoundIdException;
-import co.com.sofka.crud.dto.ToDoModelDTO;
-import co.com.sofka.crud.dto.ToDoListModelDTO;
+import co.com.sofka.crud.dto.*;
 import co.com.sofka.crud.services.ToDoListService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,49 +10,48 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = {"${settings.cors_origin}"})
 public class ToDoListController {
 
-    private ToDoListService toDoListService;
-
     @Autowired
-    public ToDoListController(ToDoListService toDoListService) {
-        this.toDoListService = toDoListService;
-    }
+    private ToDoListService service;
 
-    @GetMapping(value = "api/list")
-    public Iterable<ToDoListModelDTO> getAllListToDos(){
-        return toDoListService.getAllListToDos();
-    }
 
-    @GetMapping(value = "api/{listId}/todos")
-    public Iterable<ToDoModelDTO> getToDosByListId(@PathVariable("listId") Long listId){
-        return toDoListService.getToDosByListId(listId);
+    @GetMapping(value = "api/todos")
+    public Iterable<ToDoDTO> list() {
+        return service.listTodos();
     }
 
     @PostMapping(value = "api/todolist")
-    public ToDoListModelDTO newListToDo(@RequestBody ToDoListModelDTO todo){
-        return toDoListService.newListToDo(todo);
+    public ToDoListDTO saveTodoList(ToDoListDTO todoList) {
+        return service.saveList(todoList);
     }
 
-    @DeleteMapping(value = "api/{id}/todolist")
-    public void deleteListById(@PathVariable("id") Long id){
-        toDoListService.deleteListById(id);
+
+    @GetMapping(value = "api/todolist")
+    public Iterable<ToDoListDTO> getTodoList() {
+        return service.listTodoList();
     }
 
-    @PutMapping(value = "api/{listId}/todo")
-    public ToDoModelDTO updateAToDoByListId(@PathVariable("listId") Long listId, @RequestBody ToDoModelDTO todo){
-        if(todo.getId() != null){
-            return toDoListService.updateAToDoByListId(listId, todo);
+    @PostMapping(value = "api/{idList}/todo")
+    public ToDoDTO save(@PathVariable("idList")Long idList, @RequestBody ToDoDTO todo) {
+        return service.addNewToDoByListId(idList,todo);
+    }
+
+    @PutMapping(value = "api/todo")
+    public ToDoDTO update(@RequestBody ToDoDTO todo) {
+        System.out.println(todo.getName());
+        if (todo.getId() != null) {
+            return service.save(todo);
         }
-        throw new NotFoundIdException("No existe el id para actualizar");
-    }
-
-    @PostMapping(value = "api/{listId}/todo")
-    public ToDoModelDTO addNewToDoByListId(@PathVariable("listId") Long listId, @RequestBody ToDoModelDTO todo){
-        return toDoListService.addNewToDoByListId(listId, todo);
+        throw new RuntimeException("No existe el id para actualziar");
     }
 
     @DeleteMapping(value = "api/{id}/todo")
-    public void deleteAToDoById(@PathVariable("id")Long id){
-        toDoListService.deleteAToDoById(id);
+    public void delete(@PathVariable("id") Long id) {
+        service.deleteTodo(id);
+    }
+
+    @GetMapping(value = "api/{id}/todo")
+    public ToDoDTO get(@PathVariable("id") Long id) {
+        return service.get(id);
     }
 
 }

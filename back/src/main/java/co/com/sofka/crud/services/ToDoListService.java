@@ -2,12 +2,11 @@ package co.com.sofka.crud.services;
 
 import co.com.sofka.crud.dao.ToDoListRepository;
 import co.com.sofka.crud.dao.ToDoRepository;
-import co.com.sofka.crud.dto.ToDoModelDTO;
-import co.com.sofka.crud.dto.ToDoListModelDTO;
+import co.com.sofka.crud.dto.ToDoDTO;
+import co.com.sofka.crud.dto.ToDoListDTO;
 import co.com.sofka.crud.entitys.ToDo;
 import co.com.sofka.crud.entitys.ToDoList;
-import co.com.sofka.crud.controller.exception.NotFoundIdException;
-import co.com.sofka.crud.controller.exception.ToDoBusinessException;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,15 +30,15 @@ public class ToDoListService {
         this.toDoRepository = toDoRepository;
     }
 
-    public Set<ToDoModelDTO> getToDosByListId(Long id) {
+    public Set<ToDoDTO> getToDosByListId(Long id) {
         return toDoListRepository.findById(id)
                 .orElseThrow(() -> new NotFoundIdException(NO_FAULT_ID))
                 .getToDos().stream()
-                .map(item -> new ToDoModelDTO(item.getId(), item.getName(), item.isCompleted(), id))
+                .map(item -> new ToDoDTO(item.getId(), item.getName(), item.isCompleted(), id))
                 .collect(Collectors.toSet());
     }
 
-    public ToDoModelDTO addNewToDoByListId(Long listId, ToDoModelDTO aToDoModel) {
+    public ToDoDTO addNewToDoByListId(Long listId, ToDoDTO aToDoModel) {
         var listToDo = toDoListRepository.findById(listId)
                 .orElseThrow(() -> new NotFoundIdException(NO_FAULT_ID));
         var toDo = new ToDo();
@@ -66,7 +65,7 @@ public class ToDoListService {
         return aToDoModel;
     }
 
-    public ToDoModelDTO updateAToDoByListId(Long listId, ToDoModelDTO aToDoModel) {
+    public ToDoDTO updateAToDoByListId(Long listId, ToDoDTO aToDoModel) {
         var listToDo = toDoListRepository.findById(listId)
                 .orElseThrow(() -> new NotFoundIdException(NO_FAULT_ID));
 
@@ -85,7 +84,7 @@ public class ToDoListService {
     }
 
 
-    public ToDoListModelDTO newListToDo(ToDoListModelDTO aToDoListModel) {
+    public ToDoListDTO newListToDo(ToDoListDTO aToDoListModel) {
         var listToDo = new ToDoList();
         listToDo.setName(Objects.requireNonNull(aToDoListModel.getName()));
         if(listToDo.getName().isEmpty() || listToDo.getName().length() < 3){
@@ -96,15 +95,15 @@ public class ToDoListService {
         return aToDoListModel;
     }
 
-    public Set<ToDoListModelDTO> getAllListToDos() {
+    public Set<ToDoListDTO> getAllListToDos() {
         return StreamSupport
                 .stream(toDoListRepository.findAll().spliterator(), false)
                 .map(toDoList -> {
                     var listDto = toDoList.getToDos()
                             .stream()
-                            .map(item -> new ToDoModelDTO(item.getId(), item.getName(), item.isCompleted(), toDoList.getId()))
+                            .map(item -> new ToDoDTO(item.getId(), item.getName(), item.isCompleted(), toDoList.getId()))
                             .collect(Collectors.toSet());
-                    return new ToDoListModelDTO(toDoList.getId(), toDoList.getName(), listDto);
+                    return new ToDoListDTO(toDoList.getId(), toDoList.getName(), listDto);
                 })
                 .collect(Collectors.toSet());
     }
