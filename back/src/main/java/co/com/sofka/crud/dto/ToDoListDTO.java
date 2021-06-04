@@ -1,20 +1,16 @@
 package co.com.sofka.crud.dto;
 
-import java.util.HashSet;
 import java.util.Set;
 
 public class ToDoListDTO {
     private Long id;
     private String name;
-    private Set<ToDoModelDTO> items = new HashSet<>();
+    private Set<ToDoDTO> toDos;
 
-    public ToDoListDTO(){
-        super();
-    }
-    public ToDoListDTO(Long id, String name, Set<ToDoModelDTO> items) {
+    public ToDoListDTO(Long id, String name, Set<ToDoDTO> toDos) {
         this.id = id;
         this.name = name;
-        this.items = items;
+        this.toDos = toDos;
     }
 
     public Long getId() {
@@ -33,11 +29,11 @@ public class ToDoListDTO {
         this.name = name;
     }
 
-    public Set<ToDoModelDTO> getItems() {
-        return items;
+    public Set<ToDoDTO> getToDos() {
+        return toDos;
     }
 
-    public void setItems(Set<ToDoModelDTO> items) {
-        this.items = items;
+    public void setToDos(Set<ToDoDTO> toDos) {
+        this.toDos = toDos;
     }
 }
