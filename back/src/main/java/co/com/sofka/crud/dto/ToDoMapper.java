@@ -1,6 +1,7 @@
 package co.com.sofka.crud.dto;
 
 import co.com.sofka.crud.entitys.ToDo;
+
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -15,7 +16,7 @@ public interface ToDoMapper {
             @Mapping(source = "id", target = "id"),
             @Mapping(source = "name", target = "name"),
             @Mapping(source = "completed", target = "completed"),
-            @Mapping(source = "groupListId", target = "groupListId")
+            @Mapping(source = "ListId", target = "ListId")
     })
     ToDoDTO todoToTodoDTO(ToDo todo);
     Iterable<ToDoDTO> toTodoDTOs( Iterable<ToDo> todoList);

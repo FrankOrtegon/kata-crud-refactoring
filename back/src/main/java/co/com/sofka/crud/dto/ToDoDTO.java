@@ -6,9 +6,6 @@ public class ToDoDTO {
     private String name;
     private boolean completed;
 
-    public ToDoDTO() {
-        super();
-    }
 
     public ToDoDTO(Long id, String name, boolean completed, Long listId) {
         this.id = id;
@@ -27,8 +24,9 @@ public class ToDoDTO {
     public Long getId() {
         return id;
     }
-    public void setId(Long id) {
-        this.id = id;
+
+    public void setId(Long identificador) {
+        this.id = identificador;
     }
 
     public String getName() {

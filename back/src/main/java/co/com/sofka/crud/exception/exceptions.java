@@ -3,7 +3,6 @@ package co.com.sofka.crud.exception;
 
 public class exceptions extends RuntimeException {
 
-
     public exceptions() {
     }
 

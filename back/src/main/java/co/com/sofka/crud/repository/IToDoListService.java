@@ -1,4 +1,4 @@
-package co.com.sofka.crud.services;
+package co.com.sofka.crud.repository;
 
 import co.com.sofka.crud.dto.ToDoDTO;
 import co.com.sofka.crud.dto.ToDoListDTO;
@@ -7,7 +7,6 @@ import co.com.sofka.crud.entitys.ToDoList;
 public interface IToDoListService {
 
     Iterable<ToDoListDTO> listTodoList();
-
     ToDoListDTO saveList(ToDoListDTO todoList);
 
 

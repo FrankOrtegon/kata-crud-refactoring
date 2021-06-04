@@ -37,7 +37,6 @@ public class ToDoListController {
 
     @PutMapping(value = "api/todo")
     public ToDoDTO update(@RequestBody ToDoDTO todo) {
-        System.out.println(todo.getName());
         if (todo.getId() != null) {
             return service.save(todo);
         }

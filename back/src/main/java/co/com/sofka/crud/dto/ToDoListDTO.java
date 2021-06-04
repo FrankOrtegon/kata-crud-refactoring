@@ -1,5 +1,7 @@
 package co.com.sofka.crud.dto;
 
+import co.com.sofka.crud.entitys.ToDo;
+
 import java.util.Set;
 
 public class ToDoListDTO {

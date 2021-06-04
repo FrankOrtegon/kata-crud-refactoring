@@ -1,22 +1,25 @@
 package co.com.sofka.crud.services;
 
-import co.com.sofka.crud.dao.ToDoListRepository;
-import co.com.sofka.crud.dao.ToDoRepository;
+import co.com.sofka.crud.repository.dao.ToDoListRepository;
+import co.com.sofka.crud.repository.dao.ToDoRepository;
 import co.com.sofka.crud.dto.ToDoDTO;
 import co.com.sofka.crud.dto.ToDoListDTO;
+import co.com.sofka.crud.dto.ToDoListMapper;
+import co.com.sofka.crud.dto.ToDoMapper;
 import co.com.sofka.crud.entitys.ToDo;
 import co.com.sofka.crud.entitys.ToDoList;
-
+import co.com.sofka.crud.exception.exceptions;
+import co.com.sofka.crud.repository.IToDoListService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.Comparator;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+
 @Service
-public class ToDoListService {
+public class ToDoListService implements IToDoListService {
 
     @Autowired
     private ToDoListRepository todoListRepository;
@@ -54,7 +57,7 @@ public class ToDoListService {
 
         var listToDo = todoListRepository.findById(id).orElseThrow();
         if(todo.getName().isEmpty()){
-            throw new exceptions("To-Do name cant be empty");
+            throw new exceptions("El nombre de la tarea no puede estar vacio");
         }
         ToDo todoEn = todoMapper.toTodo(todo);
         //addition new to-do
@@ -101,8 +104,9 @@ public class ToDoListService {
                 .stream()
                 .max(Comparator.comparingInt(item -> item.getId().intValue()))
                 .orElseThrow();
-        System.out.println(lastToDo);
         return lastToDo;
     }
+
+
 
 }

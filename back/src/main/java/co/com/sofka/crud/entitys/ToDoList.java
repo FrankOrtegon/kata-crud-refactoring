@@ -7,7 +7,7 @@ import java.util.Set;
 @Table(name = "group_list")
 public class ToDoList {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
     private String name;
 
