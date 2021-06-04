@@ -12,92 +12,34 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
-import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Service
 public class ToDoListService {
 
-    public static final String NO_FAULT_ID = "No existe el id de la lista";
-    private ToDoListRepository toDoListRepository;
-    private ToDoRepository toDoRepository;
+    @Autowired
+    private ToDoListRepository todoListRepository;
 
     @Autowired
-    public ToDoListService(ToDoListRepository toDoListRepository, ToDoRepository toDoRepository) {
-        this.toDoListRepository = toDoListRepository;
-        this.toDoRepository = toDoRepository;
+    private ToDoListMapper todoListMapper;
+
+    @Autowired
+    private ToDoRepository repository;
+
+    @Autowired
+    private ToDoMapper todoMapper;
+
+
+    public ToDoListDTO getTodoList(Long id) {
+        return todoListMapper.todoToTodoDTO(todoListRepository.findById(id).orElseThrow());
     }
 
-    public Set<ToDoDTO> getToDosByListId(Long id) {
-        return toDoListRepository.findById(id)
-                .orElseThrow(() -> new NotFoundIdException(NO_FAULT_ID))
-                .getToDos().stream()
-                .map(item -> new ToDoDTO(item.getId(), item.getName(), item.isCompleted(), id))
-                .collect(Collectors.toSet());
-    }
+    @Override
+    public Iterable<ToDoListDTO> listTodoList() {
 
-    public ToDoDTO addNewToDoByListId(Long listId, ToDoDTO aToDoModel) {
-        var listToDo = toDoListRepository.findById(listId)
-                .orElseThrow(() -> new NotFoundIdException(NO_FAULT_ID));
-        var toDo = new ToDo();
-
-        toDo.setCompleted(aToDoModel.isCompleted());
-        toDo.setName(Objects.requireNonNull(aToDoModel.getName()));
-        toDo.setId(aToDoModel.getId());
-
-        if(toDo.getName().isEmpty() || toDo.getName().length() < 3){
-            throw new ToDoBusinessException("No valid entity To-Do to be save");
-        }
-
-        //addition new to-do
-        listToDo.getToDos().add(toDo);
-
-        var listUpdated = toDoListRepository.save(listToDo);
-        //last item
-        var lastToDo = listUpdated.getToDos()
-                .stream()
-                .max(Comparator.comparingInt(item -> item.getId().intValue()))
-                .orElseThrow();
-        aToDoModel.setId(lastToDo.getId());
-        aToDoModel.setListId(listId);
-        return aToDoModel;
-    }
-
-    public ToDoDTO updateAToDoByListId(Long listId, ToDoDTO aToDoModel) {
-        var listToDo = toDoListRepository.findById(listId)
-                .orElseThrow(() -> new NotFoundIdException(NO_FAULT_ID));
-
-        //edit to-do
-        for(var item : listToDo.getToDos()){
-            if(item.getId().equals(aToDoModel.getId())){
-                item.setCompleted(aToDoModel.isCompleted());
-                item.setName(Objects.requireNonNull(aToDoModel.getName()));
-                item.setId(Objects.requireNonNull(aToDoModel.getId()));
-            }
-        }
-
-        toDoListRepository.save(listToDo);
-
-        return aToDoModel;
-    }
-
-
-    public ToDoListDTO newListToDo(ToDoListDTO aToDoListModel) {
-        var listToDo = new ToDoList();
-        listToDo.setName(Objects.requireNonNull(aToDoListModel.getName()));
-        if(listToDo.getName().isEmpty() || listToDo.getName().length() < 3){
-            throw new ToDoBusinessException("No valid entity List To-Do to be save");
-        }
-        var id = toDoListRepository.save(listToDo).getId();
-        aToDoListModel.setId(id);
-        return aToDoListModel;
-    }
-
-    public Set<ToDoListDTO> getAllListToDos() {
         return StreamSupport
-                .stream(toDoListRepository.findAll().spliterator(), false)
+                .stream(todoListRepository.findAll().spliterator(), false)
                 .map(toDoList -> {
                     var listDto = toDoList.getToDos()
                             .stream()
@@ -108,14 +50,59 @@ public class ToDoListService {
                 .collect(Collectors.toSet());
     }
 
-    public void deleteListById(Long listId){
-        var listToDo = toDoListRepository.findById(listId)
-                .orElseThrow(() -> new NotFoundIdException(NO_FAULT_ID));
-        toDoListRepository.delete(listToDo);
+    public ToDoDTO addNewToDoByListId(Long id, ToDoDTO todo) {
+
+        var listToDo = todoListRepository.findById(id).orElseThrow();
+        if(todo.getName().isEmpty()){
+            throw new exceptions("To-Do name cant be empty");
+        }
+        ToDo todoEn = todoMapper.toTodo(todo);
+        //addition new to-do
+        listToDo.getToDos().add(todoEn);
+        var listUpdated = todoListRepository.save(listToDo);
+        //last item
+        ToDo lastToDo = getLastToDo(listUpdated);
+        todo.setId(lastToDo.getId());
+        todo.setListId(id);
+        return todo;
     }
 
-    public void deleteAToDoById(Long id) {
-        var toDo = toDoRepository.findById(id).orElseThrow();
-        toDoRepository.delete(toDo);
+    @Override
+    public ToDoListDTO saveList(ToDoListDTO todoList) {
+        return todoListMapper.todoToTodoDTO(todoListRepository.save(todoListMapper.toTodo(todoList)));
     }
+
+    @Override
+    public void deleteTodoList(Long id) {
+        todoListRepository.delete(todoListMapper.toTodo(getTodoList(id)));
+    }
+
+    public ToDoDTO get(Long id) {
+        return todoMapper.todoToTodoDTO(repository.findById(id).orElseThrow());
+    }
+
+    @Override
+    public Iterable<ToDoDTO> listTodos() {
+        return todoMapper.toTodoDTOs(repository.findAll());
+    }
+
+    @Override
+    public ToDoDTO save(ToDoDTO todo) {
+        return todoMapper.todoToTodoDTO(repository.save(todoMapper.toTodo(todo)));
+    }
+
+    @Override
+    public void deleteTodo(Long id) {
+        repository.delete(todoMapper.toTodo(get(id)));
+    }
+
+    private ToDo getLastToDo(ToDoList listUpdated) {
+        var lastToDo = listUpdated.getToDos()
+                .stream()
+                .max(Comparator.comparingInt(item -> item.getId().intValue()))
+                .orElseThrow();
+        System.out.println(lastToDo);
+        return lastToDo;
+    }
+
 }
