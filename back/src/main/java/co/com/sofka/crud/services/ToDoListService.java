@@ -6,8 +6,8 @@ import co.com.sofka.crud.dto.ToDoModelDTO;
 import co.com.sofka.crud.dto.ToDoListModelDTO;
 import co.com.sofka.crud.entitys.ToDo;
 import co.com.sofka.crud.entitys.ToDoList;
-import co.com.sofka.crud.controller.NotFoundIdException;
-import co.com.sofka.crud.controller.ToDoBusinessException;
+import co.com.sofka.crud.controller.exception.NotFoundIdException;
+import co.com.sofka.crud.controller.exception.ToDoBusinessException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

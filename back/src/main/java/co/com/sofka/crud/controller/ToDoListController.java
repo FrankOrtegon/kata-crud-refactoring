@@ -1,5 +1,6 @@
 package co.com.sofka.crud.controller;
 
+import co.com.sofka.crud.controller.exception.NotFoundIdException;
 import co.com.sofka.crud.dto.ToDoModelDTO;
 import co.com.sofka.crud.dto.ToDoListModelDTO;
 import co.com.sofka.crud.services.ToDoListService;
