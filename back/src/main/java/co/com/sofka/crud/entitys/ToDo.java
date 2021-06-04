@@ -1,15 +1,28 @@
 package co.com.sofka.crud.entitys;
 
-
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "todo")
 public class ToDo {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue
     private Long id;
+    private Long ListId;
     private String name;
     private boolean completed;
+
+
+    public Long getListId() {
+        return ListId;
+    }
+
+    public void setListId(Long listId) {
+        this.ListId = listId;
+    }
 
     public Long getId() {
         return id;
@@ -34,5 +47,4 @@ public class ToDo {
     public void setCompleted(boolean completed) {
         this.completed = completed;
     }
-
 }
