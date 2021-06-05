@@ -24,7 +24,6 @@ public class ToDoDTO {
     public Long getId() {
         return id;
     }
-
     public void setId(Long identificador) {
         this.id = identificador;
     }

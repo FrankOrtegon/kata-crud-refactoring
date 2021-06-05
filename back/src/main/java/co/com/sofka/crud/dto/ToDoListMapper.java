@@ -1,6 +1,5 @@
 package co.com.sofka.crud.dto;
 
-import co.com.sofka.crud.entitys.ToDo;
 import co.com.sofka.crud.entitys.ToDoList;
 
 import org.mapstruct.InheritInverseConfiguration;

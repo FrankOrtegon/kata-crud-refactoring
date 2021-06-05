@@ -11,17 +11,17 @@ public class ToDo {
     @Id
     @GeneratedValue
     private Long id;
-    private Long ListId;
+    private Long listId;
     private String name;
     private boolean completed;
 
 
     public Long getListId() {
-        return ListId;
+        return listId;
     }
 
     public void setListId(Long listId) {
-        this.ListId = listId;
+        this.listId = listId;
     }
 
     public Long getId() {

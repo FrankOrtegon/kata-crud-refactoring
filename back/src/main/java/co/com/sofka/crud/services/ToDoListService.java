@@ -60,10 +60,10 @@ public class ToDoListService implements IToDoListService {
             throw new exceptions("El nombre de la tarea no puede estar vacio");
         }
         ToDo todoEn = todoMapper.toTodo(todo);
-        //addition new to-do
+
         listToDo.getToDos().add(todoEn);
         var listUpdated = todoListRepository.save(listToDo);
-        //last item
+
         ToDo lastToDo = getLastToDo(listUpdated);
         todo.setId(lastToDo.getId());
         todo.setListId(id);
@@ -71,8 +71,9 @@ public class ToDoListService implements IToDoListService {
     }
 
     @Override
-    public ToDoListDTO saveList(ToDoListDTO todoList) {
-        return todoListMapper.todoToTodoDTO(todoListRepository.save(todoListMapper.toTodo(todoList)));
+    public ToDoListDTO saveList(ToDoListDTO todoListDto) {
+        ToDoList todoList = todoListRepository.save(todoListMapper.toTodo(todoListDto));
+        return todoListMapper.todoToTodoDTO(todoList);
     }
 
     @Override
@@ -106,7 +107,5 @@ public class ToDoListService implements IToDoListService {
                 .orElseThrow();
         return lastToDo;
     }
-
-
 
 }

@@ -20,7 +20,7 @@ public class ToDoListController {
     }
 
     @PostMapping(value = "api/todolist")
-    public ToDoListDTO saveTodoList(ToDoListDTO todoList) {
+    public ToDoListDTO saveTodoList( @RequestBody ToDoListDTO todoList) {
         return service.saveList(todoList);
     }
 
@@ -31,7 +31,7 @@ public class ToDoListController {
     }
 
     @PostMapping(value = "api/{idList}/todo")
-    public ToDoDTO save(@PathVariable("idList")Long idList, @RequestBody ToDoDTO todo) {
+    public ToDoDTO saveById(@PathVariable("idList")Long idList, @RequestBody ToDoDTO todo) {
         return service.addNewToDoByListId(idList,todo);
     }
 
@@ -51,6 +51,14 @@ public class ToDoListController {
     @GetMapping(value = "api/{id}/todo")
     public ToDoDTO get(@PathVariable("id") Long id) {
         return service.get(id);
+    }
+
+    @PostMapping(value = "api/todo")
+    public ToDoDTO saveTodo(@RequestBody ToDoDTO todo) {
+        if (todo.getName() != null) {
+            return service.save(todo);
+        }
+        throw new RuntimeException("No existe nombre de la tarea para guardar");
     }
 
 }
